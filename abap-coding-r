@@ -1,0 +1,27 @@
+# ABAP 团队编码规范
+
+## 变量命名规则
+所有局部变量必须使用匈牙利命名法前缀：
+- `lv_` 表示局部变量 (Local Variable)，如 `lv_customer_name`
+- `ls_` 表示局部结构 (Local Structure)，如 `ls_header_data`
+- `lt_` 表示局部内表 (Local Table)，如 `lt_material_list`
+- `gv_`, `gs_`, `gt_` 表示全局变量、结构、内表。
+
+## 数据库访问规则
+1.  禁止在循环中使用 `SELECT ... ENDSELECT`。
+2.  必须使用内联声明 `@DATA(...)` 或先声明到结构化变量，避免使用 `SELECT *`。
+3.  所有SELECT语句必须指定主键或有效索引字段。
+
+## 示例 (正确与错误)
+```abap
+" ✅ 正确：使用前缀和内联声明
+SELECT bukrs, belnr
+  FROM bkpf
+  INTO TABLE @DATA(lt_invoices)
+  WHERE bukrs = @lv_company_code.
+
+" ❌ 错误：无前缀，使用SELECT *
+SELECT *
+  FROM bkpf
+  INTO wa_bkpf
+  WHERE bukrs = p_bukrs.
